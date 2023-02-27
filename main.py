@@ -2,18 +2,14 @@
 from utils.divideAndConquer import *
 from utils.visualization import *
 from utils.generator import *
-from utils.distance import *
-from dataStructure.point import *
 
 # import GUI
 import tkinter
 import tkinter.messagebox
 import customtkinter
-from tkinter import filedialog as fd
-import cv2 
-import zipfile
 import time as t
 import numpy as np
+from PIL import ImageTk, Image
 
 # setting customtkinter
 customtkinter.set_appearance_mode("Dark")  
@@ -35,6 +31,11 @@ class App(customtkinter.CTk):
         self.dimension = None
         self.numOfPoints = None
         self.listPoint = []
+        self.graph = None
+        self.solution = None
+        self.countEuclidean = None
+        self.shortestDistance = None
+        self.time = 0
 
         self.frame_right = customtkinter.CTkFrame(master=self)
         self.frame_right.grid(row=0, column=1, sticky="nswe", padx=20, pady=20)
@@ -43,7 +44,7 @@ class App(customtkinter.CTk):
         self.optionmenu_1 = customtkinter.CTkOptionMenu(master=self.frame_right,
                                                         values=["Light", "Dark"],
                                                         command=self.change_appearance_mode)
-        self.optionmenu_1.grid(row=9, column=0, pady=10, padx=20, sticky="w")
+        self.optionmenu_1.grid(row=3, column=0, pady=10, padx=20, sticky="w")
 
         # Frame 
         self.frame_right.columnconfigure(1, weight=6)
@@ -57,7 +58,7 @@ class App(customtkinter.CTk):
         self.frame_input.grid(row=0, column=0, rowspan= 3, pady=20, padx=20, sticky="nsew")
 
         self.frame_info = customtkinter.CTkFrame(master=self.frame_right)
-        self.frame_info.grid(row=1, column=1,  pady=20, padx=20, sticky="nsew")
+        self.frame_info.grid(row=0, column=1, rowspan= 3, pady=20, padx=20, sticky="nsew")
 
         # Layout Input
         self.frame_input.rowconfigure(0, weight=1)
@@ -125,13 +126,8 @@ class App(customtkinter.CTk):
                                                             
         self.generatedPointCanvas.configure(yscrollcommand=self.ctk_textbox_scrollbar.set, bg="white", highlightthickness=0)
 
-        textx = ""
-
-        for i in range (3):
-            textx += "Lorem impsvvvefefefedffvfvvdvdvum\n"
-        textx += "Lorem impdvdvdvdfefefefefefefvdvsum"
         self.generatedPointTextLabel = customtkinter.CTkLabel(master=self.generatedPointTextFrame,
-                                                              text=textx,
+                                                              text="",
                                                               text_font=("Roboto Medium", -12), 
                                                               fg_color="white",
                                                               justify="left",
@@ -152,34 +148,32 @@ class App(customtkinter.CTk):
         self.generatedPointCanvas.create_window((0, 0), window=self.generatedPointTextFrame, anchor="nw")
         self.generatedPointCanvas.pack(side="left", fill="both", expand=True)
         self.ctk_textbox_scrollbar.pack(side="right", fill="y")
-        # self.generatedPointScrollbar = customtkinter.CTkScrollbar(self.frame_input, command=self.generatedPointCanvas.yview)
-        
-        # self.generatedPointCanvas.configure(yscrollcommand=self.generatedPointScrollbar.set)
 
-        # for i in range(50):
-        #     customtkinter.CTkLabel(self.generatedPointFrame, text="Sample scrolling label")
-        
         # Layout Gambar
         self.frame_info.rowconfigure(0, weight=0)
         self.frame_info.rowconfigure(1, weight=1)
         self.frame_info.columnconfigure(0, weight=1)
 
+        self.frame_info.configure(height=self.frame_input.winfo_height())
+
         self.label_infot1 = customtkinter.CTkLabel(master=self.frame_info,
                                               text="Graph Plot",
                                               text_font=("Roboto Medium", -28))  
-        self.label_infot1.grid(row=0, column=0, pady=20, padx=10)
+        self.label_infot1.grid(row=0, column=0, padx=20, pady=20)
 
 
         self.label_info_1 = customtkinter.CTkLabel(master=self.frame_info,
                                                    corner_radius=6,
+                                                   text = "",
+                                                   text_font=("Roboto Medium", -28),
                                                    fg_color=("white", "gray38"),
                                                    justify=tkinter.LEFT)
-        self.label_info_1.grid(column=0, row=1, sticky="nsew", padx=15, pady=15)
+        self.label_info_1.grid(column=0, row=1, sticky="nsew", pady=15)
 
         self.label_infot3 = customtkinter.CTkLabel(master=self.frame_right,
                                               text="Execution time: ",
-                                              text_font=("Roboto Medium", -20))  
-        self.label_infot3.grid(row=2, column=1, columnspan=2, pady=20, padx=20, sticky="nw")
+                                              text_font=("Roboto Medium", -15))  
+        self.label_infot3.grid(row=3, column=1, columnspan=2, padx=20, sticky="nw")
         # set default values
         self.optionmenu_1.set("Dark")
 
@@ -191,9 +185,16 @@ class App(customtkinter.CTk):
         
     def movetoFiles(self):
         print("button pressed")
-
-    def movetoCamera(self):
-        print("button pressed")
+    
+    def getVisualization(self):
+        if self.dimension <= 3:
+            getGraph(self.dimension, self.numOfPoints, self.listPoint, self.solution)
+            self.graph = ImageTk.PhotoImage(Image.open("bin/currentPlot.png").resize((int(self.label_info_1.winfo_height()*1.3), self.label_info_1.winfo_height()), Image.ANTIALIAS), master=self.label_info_1)
+            self.label_info_1.configure(image=self.graph)
+            self.label_info_1.configure(text="")
+        else:
+            self.label_info_1.configure(image=None)
+            self.label_info_1.configure(text="Not Available For Dimension > 3")
 
     def displayPoints(self, textToDisplay):
         self.generatedPointCanvas.destroy()
@@ -240,10 +241,15 @@ class App(customtkinter.CTk):
             if (not self.dimension > 0 or not self.numOfPoints > 1):
                 self.bufferValidityLabel.configure(text="Dimension should be integer > 0 and Number of points should be integer > 1")
             else:
+                begin = t.perf_counter()
                 self.listPoint = pointGenerator(self.dimension, self.numOfPoints)
-                listOfAllPoints = stringGenerator(self.listPoint, self.numOfPoints, self.dimension)
+                listOfAllPoints = stringDisplayGenerator(self.listPoint, self.numOfPoints, self.dimension)
                 self.displayPoints(listOfAllPoints)
-                shortestDistance(self.dimension, self.numOfPoints, self.listPoint)
+                self.shortestDistance, self.solution, self.countEuclidean = shortestDistance(self.dimension, self.numOfPoints, self.listPoint)
+                self.getVisualization()
+                end = t.perf_counter()
+                self.time = end-begin
+                self.label_infot3.configure(text=stringOutputGenerator(self.time, self.solution, self.dimension, self.shortestDistance, self.countEuclidean))
         else:
             if self.dimension.isnumeric() and not self.numOfPoints.isnumeric():
                 self.bufferValidityLabel.configure(text="Number of points should be integer > 1")
@@ -255,13 +261,11 @@ class App(customtkinter.CTk):
             else:
                 self.bufferValidityLabel.configure(text="Dimension should be integer > 0 and Number of points should be integer > 1")
 
-
-    
-        
     def change_appearance_mode(self, new_appearance_mode):
         customtkinter.set_appearance_mode(new_appearance_mode)
 
     def on_closing(self, event=0):
+        self.quit()
         self.destroy()
 
 
