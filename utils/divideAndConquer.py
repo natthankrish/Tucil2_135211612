@@ -56,6 +56,9 @@ def shortestDistance(dimension, numOfPoints, listOfAllPoints):
         if (shortestRight < shortestLeft):
             shortest = shortestRight
             solution = solutionRight
+        elif (shortestRight == shortestLeft):
+            solution = solutionRight + solutionLeft
+            shortest = shortestLeft
         else:
             shortest = shortestLeft
             solution = solutionLeft
@@ -72,6 +75,7 @@ def shortestDistance(dimension, numOfPoints, listOfAllPoints):
                 countEuclidean = countEuclidean + 1
                 pointDistance = euclideanDistance(nearLine[i], nearLine[j])
                 if (pointDistance < shortest):
+                    print("cleared")
                     solution.clear()
                     solution.append([nearLine[i], nearLine[j]])
                     shortest = pointDistance

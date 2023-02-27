@@ -36,6 +36,7 @@ class App(customtkinter.CTk):
         self.countEuclidean = None
         self.shortestDistance = None
         self.time = 0
+        self.maxAxisVal = 10
 
         self.frame_right = customtkinter.CTkFrame(master=self)
         self.frame_right.grid(row=0, column=1, sticky="nswe", padx=20, pady=20)
@@ -60,15 +61,15 @@ class App(customtkinter.CTk):
         self.frame_info = customtkinter.CTkFrame(master=self.frame_right)
         self.frame_info.grid(row=0, column=1, rowspan= 3, pady=20, padx=20, sticky="nsew")
 
-        # Layout Input
+        # Frame Input
         self.frame_input.rowconfigure(0, weight=1)
-        self.frame_input.rowconfigure(6, weight=5)
+        self.frame_input.rowconfigure(7, weight=7)
         self.frame_input.columnconfigure(0, weight=1)
         self.frame_input.columnconfigure(1, weight=1)
-        self.label_radio_group = customtkinter.CTkLabel(master=self.frame_input,
+        self.headFrameInput = customtkinter.CTkLabel(master=self.frame_input,
                                                         text="Customize Your Data",
                                                         text_font=("Roboto Medium", -20))
-        self.label_radio_group.grid(row=0, column=0, columnspan=2, pady=20, padx=10, sticky="")
+        self.headFrameInput.grid(row=0, column=0, columnspan=2, pady=20, padx=10, sticky="")
 
         self.dimension = customtkinter.CTkLabel(master=self.frame_input,
                                               text="Dimension of Point",
@@ -82,7 +83,7 @@ class App(customtkinter.CTk):
 
 
         self.numPointsLabel = customtkinter.CTkLabel(master=self.frame_input,
-                                              text="Number of point(s)",
+                                              text="Number of points",
                                               text_font=("Roboto Medium", -16))  
         self.numPointsLabel.grid(row=2, column=0, pady=0, padx=10)
 
@@ -91,6 +92,16 @@ class App(customtkinter.CTk):
                                                       width=250)
         self.numPointsBuffer.grid(row=2, column=1, pady=5, sticky="w")
 
+        self.maxAxis = customtkinter.CTkLabel(master=self.frame_input,
+                                              text="Axis Width",
+                                              text_font=("Roboto Medium", -16))  
+        self.maxAxis.grid(row=3, column=0, pady=0, padx=10)
+
+        self.maxAxis = customtkinter.CTkOptionMenu(master=self.frame_input,
+                                                        values=["10", "100", "1000"],
+                                                        command=self.getMaxAxis)
+        self.maxAxis.grid(row=3, column=1, pady=5, sticky="w")
+
         self.generateButton = customtkinter.CTkButton(master=self.frame_input,
                                                 text="Generate",
                                                 border_width=2, 
@@ -98,33 +109,33 @@ class App(customtkinter.CTk):
                                                 text_color="white",
                                                 fg_color="#1f6aa5",  
                                                 state="normal",
-                                                command=self.process)
-        self.generateButton.grid(row=3, column=0, columnspan=2, padx=20, pady=(20, 0))
+                                                command=self.checkvalid)
+        self.generateButton.grid(row=4, column=0, columnspan=2, padx=20, pady=(20, 0))
 
         self.bufferValidityLabel = customtkinter.CTkLabel(master=self.frame_input,
-                                              text="Make sure your input is valid.",
+                                              text="All points will be unique set of integers.",
                                               text_font=("Roboto Medium", -10))
-        self.bufferValidityLabel.grid(row=4, column=0, columnspan=3, pady=0, padx=10, sticky="we")
+        self.bufferValidityLabel.grid(row=5, column=0, columnspan=3, pady=0, padx=10, sticky="we")
 
 
         self.generatedPointLabel = customtkinter.CTkLabel(master=self.frame_input,
                                               text="Generated Points",
                                               text_font=("Roboto Medium", -16))
-        self.generatedPointLabel.grid(row=5, column=0, columnspan=3, pady=0, padx=10)
+        self.generatedPointLabel.grid(row=6, column=0, columnspan=3, pady=0, padx=10)
 
         self.generatedPointFrame = customtkinter.CTkFrame(self.frame_input,
                                                           border_width=2, 
                                                           fg_color=("white", "gray38"))
-        self.generatedPointFrame.grid(row=6, column=0, columnspan=3, pady=20, padx=20, sticky="nsew")
+        self.generatedPointFrame.grid(row=7, column=0, columnspan=3, pady=20, padx=20, sticky="nsew")
         
         self.generatedPointCanvas = customtkinter.CTkCanvas(self.generatedPointFrame)
 
-        self.ctk_textbox_scrollbar = customtkinter.CTkScrollbar(self.generatedPointFrame, command=self.generatedPointCanvas.yview)
+        self.generatedPointScrollbar = customtkinter.CTkScrollbar(self.generatedPointFrame, command=self.generatedPointCanvas.yview)
         self.generatedPointTextFrame = customtkinter.CTkFrame(self.generatedPointCanvas,
                                                               corner_radius=0, 
                                                               fg_color="white")
                                                             
-        self.generatedPointCanvas.configure(yscrollcommand=self.ctk_textbox_scrollbar.set, bg="white", highlightthickness=0)
+        self.generatedPointCanvas.configure(yscrollcommand=self.generatedPointScrollbar.set, bg="white", highlightthickness=0)
 
         self.generatedPointTextLabel = customtkinter.CTkLabel(master=self.generatedPointTextFrame,
                                                               text="",
@@ -147,7 +158,7 @@ class App(customtkinter.CTk):
 
         self.generatedPointCanvas.create_window((0, 0), window=self.generatedPointTextFrame, anchor="nw")
         self.generatedPointCanvas.pack(side="left", fill="both", expand=True)
-        self.ctk_textbox_scrollbar.pack(side="right", fill="y")
+        self.generatedPointScrollbar.pack(side="right", fill="y")
 
         # Layout Gambar
         self.frame_info.rowconfigure(0, weight=0)
@@ -172,8 +183,10 @@ class App(customtkinter.CTk):
 
         self.label_infot3 = customtkinter.CTkLabel(master=self.frame_right,
                                               text="Execution time: ",
-                                              text_font=("Roboto Medium", -15))  
-        self.label_infot3.grid(row=3, column=1, columnspan=2, padx=20, sticky="nw")
+                                              text_font=("Roboto Medium", -15),
+                                              justify = "left")  
+        self.label_infot3.grid(row=3, column=1, columnspan=2, sticky="nw")
+
         # set default values
         self.optionmenu_1.set("Dark")
 
@@ -183,32 +196,32 @@ class App(customtkinter.CTk):
     def button_force(self):
         print("button pressed")
         
-    def movetoFiles(self):
-        print("button pressed")
+    def getMaxAxis(self, newMaxAxis):
+        self.maxAxisVal = int(newMaxAxis)
     
     def getVisualization(self):
         if self.dimension <= 3:
-            getGraph(self.dimension, self.numOfPoints, self.listPoint, self.solution)
+            getGraph(self.dimension, self.numOfPoints, self.listPoint, self.solution, self.maxAxisVal)
             self.graph = ImageTk.PhotoImage(Image.open("bin/currentPlot.png").resize((int(self.label_info_1.winfo_height()*1.3), self.label_info_1.winfo_height()), Image.ANTIALIAS), master=self.label_info_1)
             self.label_info_1.configure(image=self.graph)
             self.label_info_1.configure(text="")
         else:
-            self.label_info_1.configure(image=None)
+            self.label_info_1.configure(image="")
             self.label_info_1.configure(text="Not Available For Dimension > 3")
 
     def displayPoints(self, textToDisplay):
         self.generatedPointCanvas.destroy()
         self.generatedPointTextFrame.destroy()
         self.generatedPointTextLabel.destroy()
-        self.ctk_textbox_scrollbar.destroy()
+        self.generatedPointScrollbar.destroy()
 
         self.generatedPointCanvas = customtkinter.CTkCanvas(self.generatedPointFrame)
-        self.ctk_textbox_scrollbar = customtkinter.CTkScrollbar(self.generatedPointFrame, command=self.generatedPointCanvas.yview)
+        self.generatedPointScrollbar = customtkinter.CTkScrollbar(self.generatedPointFrame, command=self.generatedPointCanvas.yview)
         self.generatedPointTextFrame = customtkinter.CTkFrame(self.generatedPointCanvas,
                                                               corner_radius=0, 
                                                               fg_color="white")
                                                             
-        self.generatedPointCanvas.configure(yscrollcommand=self.ctk_textbox_scrollbar.set, bg="white", highlightthickness=0)
+        self.generatedPointCanvas.configure(yscrollcommand=self.generatedPointScrollbar.set, bg="white", highlightthickness=0)
 
         self.generatedPointTextLabel = customtkinter.CTkLabel(master=self.generatedPointTextFrame,
                                                               text=textToDisplay,
@@ -229,9 +242,20 @@ class App(customtkinter.CTk):
         )
         self.generatedPointCanvas.create_window((0, 0), window=self.generatedPointTextFrame, anchor="nw")
         self.generatedPointCanvas.pack(side="left", fill="both", expand=True)
-        self.ctk_textbox_scrollbar.pack(side="right", fill="y")
+        self.generatedPointScrollbar.pack(side="right", fill="y")
 
     def process(self):
+        begin = t.perf_counter()
+        self.listPoint = pointGenerator(self.dimension, self.numOfPoints, self.maxAxisVal)
+        listOfAllPoints = stringDisplayGenerator(self.listPoint, self.numOfPoints, self.dimension)
+        self.displayPoints(listOfAllPoints)
+        self.shortestDistance, self.solution, self.countEuclidean = shortestDistance(self.dimension, self.numOfPoints, self.listPoint)
+        self.getVisualization()
+        end = t.perf_counter()
+        self.time = end-begin
+        self.label_infot3.configure(text=stringOutputGenerator(self.time, self.solution, self.dimension, self.shortestDistance, self.countEuclidean))
+
+    def checkvalid(self):
         self.dimension = self.dimensionBuffer.get()
         self.numOfPoints = self.numPointsBuffer.get()
         self.listPoint = []
@@ -241,15 +265,10 @@ class App(customtkinter.CTk):
             if (not self.dimension > 0 or not self.numOfPoints > 1):
                 self.bufferValidityLabel.configure(text="Dimension should be integer > 0 and Number of points should be integer > 1")
             else:
-                begin = t.perf_counter()
-                self.listPoint = pointGenerator(self.dimension, self.numOfPoints)
-                listOfAllPoints = stringDisplayGenerator(self.listPoint, self.numOfPoints, self.dimension)
-                self.displayPoints(listOfAllPoints)
-                self.shortestDistance, self.solution, self.countEuclidean = shortestDistance(self.dimension, self.numOfPoints, self.listPoint)
-                self.getVisualization()
-                end = t.perf_counter()
-                self.time = end-begin
-                self.label_infot3.configure(text=stringOutputGenerator(self.time, self.solution, self.dimension, self.shortestDistance, self.countEuclidean))
+                if (self.numOfPoints > (2*self.maxAxisVal + 1) ** self.dimension):
+                    self.bufferValidityLabel.configure(text="Number of points should be lower than (2 *Axis Width)^dimension")
+                else:
+                    self.process()
         else:
             if self.dimension.isnumeric() and not self.numOfPoints.isnumeric():
                 self.bufferValidityLabel.configure(text="Number of points should be integer > 1")
