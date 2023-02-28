@@ -67,3 +67,26 @@ def stringOutputGenerator(time, solution, dimension, distance, euclideanCount):
     else:
         text += "Check Terminal"
     return text
+
+def generateTerminal(distanceBrute, countBrute, solutionBrute, solution, countEuclidean, shortestDistance, listOfAllPoints):
+    print("-------------------------------------------------")
+    print("LIST OF ALL POINTS")
+    print("-------------------------------------------------")
+    for i in range(len(listOfAllPoints)):
+        print(str(i+1) + ". " + str(listOfAllPoints[i]))
+    print("-------------------------------------------------")
+    print("SEARCHING RESULTS")
+    print("-------------------------------------------------")
+    print("1. Brute Force")
+    print("Shortest Distance:", distanceBrute)
+    print("Count Euclidean:", countBrute)
+    print("Number Solution:", len(solutionBrute))
+    print()
+    print("2. Divide and Conquer")
+    print("Shortest Distance:", shortestDistance)
+    print("Count Euclidean:", countEuclidean)
+    print("Number Solution:", len(solution))
+    print()
+    print("SOLUTION")
+    for i in range (len(solution)):
+        print(solution[i])

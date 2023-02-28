@@ -2,6 +2,7 @@
 from utils.divideAndConquer import *
 from utils.visualization import *
 from utils.generator import *
+from utils.bruteforce import *
 
 # import GUI
 import tkinter
@@ -167,19 +168,19 @@ class App(customtkinter.CTk):
 
         self.frame_info.configure(height=self.frame_input.winfo_height())
 
-        self.label_infot1 = customtkinter.CTkLabel(master=self.frame_info,
+        self.graphLabel = customtkinter.CTkLabel(master=self.frame_info,
                                               text="Graph Plot",
                                               text_font=("Roboto Medium", -28))  
-        self.label_infot1.grid(row=0, column=0, padx=20, pady=20)
+        self.graphLabel.grid(row=0, column=0, padx=20, pady=20)
 
 
-        self.label_info_1 = customtkinter.CTkLabel(master=self.frame_info,
+        self.solutionLabel = customtkinter.CTkLabel(master=self.frame_info,
                                                    corner_radius=6,
                                                    text = "",
                                                    text_font=("Roboto Medium", -28),
                                                    fg_color=("white", "gray38"),
                                                    justify=tkinter.LEFT)
-        self.label_info_1.grid(column=0, row=1, sticky="nsew", pady=15)
+        self.solutionLabel.grid(column=0, row=1, sticky="nsew", pady=15)
 
         self.label_infot3 = customtkinter.CTkLabel(master=self.frame_right,
                                               text="Execution time: ",
@@ -189,12 +190,6 @@ class App(customtkinter.CTk):
 
         # set default values
         self.optionmenu_1.set("Dark")
-
-    def button_event(self):
-        print("button pressed")
-    
-    def button_force(self):
-        print("button pressed")
         
     def getMaxAxis(self, newMaxAxis):
         self.maxAxisVal = int(newMaxAxis)
@@ -202,12 +197,14 @@ class App(customtkinter.CTk):
     def getVisualization(self):
         if self.dimension <= 3:
             getGraph(self.dimension, self.numOfPoints, self.listPoint, self.solution, self.maxAxisVal)
-            self.graph = ImageTk.PhotoImage(Image.open("bin/currentPlot.png").resize((int(self.label_info_1.winfo_height()*1.3), self.label_info_1.winfo_height()), Image.ANTIALIAS), master=self.label_info_1)
-            self.label_info_1.configure(image=self.graph)
-            self.label_info_1.configure(text="")
+            self.graph = ImageTk.PhotoImage(Image.open("bin/currentPlot.png").resize((int(self.solutionLabel.winfo_height()*1.3), self.solutionLabel.winfo_height()), Image.ANTIALIAS), master=self.solutionLabel)
+            self.solutionLabel.configure(image=self.graph)
+            self.solutionLabel.configure(text="")
         else:
-            self.label_info_1.configure(image="")
-            self.label_info_1.configure(text="Not Available For Dimension > 3")
+            self.solutionLabel.configure(image="")
+            self.solutionLabel.configure(text="Not Available For Dimension > 3")
+        distanceBrute, solutionBrute, countBrute = bruteForce(self.numOfPoints, self.listPoint)
+        generateTerminal(distanceBrute, countBrute, solutionBrute, self.solution, self.countEuclidean, self.shortestDistance, self.listPoint)
 
     def displayPoints(self, textToDisplay):
         self.generatedPointCanvas.destroy()
@@ -265,8 +262,8 @@ class App(customtkinter.CTk):
             if (not self.dimension > 0 or not self.numOfPoints > 1):
                 self.bufferValidityLabel.configure(text="Dimension should be integer > 0 and Number of points should be integer > 1")
             else:
-                if (self.numOfPoints > (2*self.maxAxisVal + 1) ** self.dimension):
-                    self.bufferValidityLabel.configure(text="Number of points should be lower than (2 *Axis Width)^dimension")
+                if (self.numOfPoints > ((2*self.maxAxisVal + 1) ** self.dimension)):
+                    self.bufferValidityLabel.configure(text="Number of points should be lower than (2 *Axis Width)^dimension + 1")
                 else:
                     self.process()
         else:
