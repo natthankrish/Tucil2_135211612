@@ -69,7 +69,7 @@ class App(customtkinter.CTk):
         self.frame_input.columnconfigure(1, weight=1)
         self.headFrameInput = customtkinter.CTkLabel(master=self.frame_input,
                                                         text="Customize Your Data",
-                                                        font=('Roboto', -20, 'Medium'))
+                                                        font=('Roboto Medium', -20))
         self.headFrameInput.grid(row=0, column=0, columnspan=2, pady=20, padx=10, sticky="")
 
         self.dimension = customtkinter.CTkLabel(master=self.frame_input,
