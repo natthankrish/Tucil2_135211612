@@ -27,9 +27,9 @@ Semua hal berikut harus terinstall sebelum menjalankan program,
   ```sh
   sudo apt-get install python3
   ```
-* Library Tkinter
+* Library CustomTkinter
   ```sh
-  sudo apt-get install python3-tk
+  pip install customtkinter
   ```
 * Library Matplotlib
   ```sh
@@ -46,9 +46,13 @@ Semua hal berikut harus terinstall sebelum menjalankan program,
    ```sh
    git clone https://github.com/natthankrish/Tucil2_135211612.git
    ```
-3. Lakukan Run pada file `main`
+3. Pindah ke folder clone
    ```sh
-   python3 main.py
+   cd ./Tucil2_13521162
+   ```
+4. Lakukan Run pada file `main`
+   ```sh
+   python main.py
    ```
 4. Aplikasi anda sudah dapat digunakan
 
