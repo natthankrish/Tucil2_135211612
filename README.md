@@ -55,9 +55,9 @@ Semua hal berikut harus terinstall sebelum menjalankan program,
    ```sh
    git clone https://github.com/natthankrish/Tucil2_135211612.git
    ```
-3. Pindah ke folder clone
+3. Pindah ke folder src
    ```sh
-   cd ./Tucil2_13521162
+   cd ./Tucil2_13521162/src
    ```
 4. Lakukan Run pada file `main`
    ```sh
