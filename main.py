@@ -7,7 +7,6 @@ from utils.bruteforce import *
 # import GUI
 import tkinter
 import tkinter.messagebox
-from tkinter import font
 import customtkinter
 import time as t
 import numpy as np
@@ -204,7 +203,7 @@ class App(customtkinter.CTk):
             self.solutionLabel.configure(image="")
             self.solutionLabel.configure(text="Not Available For Dimension > 3")
         distanceBrute, solutionBrute, countBrute = bruteForce(self.numOfPoints, self.listPoint)
-        generateTerminal(distanceBrute, countBrute, solutionBrute, self.solution, self.countEuclidean, self.shortestDistance,)
+        generateTerminal(distanceBrute, countBrute, solutionBrute, self.solution, self.countEuclidean, self.shortestDistance, self.listPoint)
 
     def displayPoints(self, textToDisplay):
         self.generatedPointCanvas.destroy()
