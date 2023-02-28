@@ -37,7 +37,11 @@ Semua hal berikut harus terinstall sebelum menjalankan program,
   ```
 * Library Matplotlib
   ```sh
-  pip install 
+  pip install matplotlib
+  ```
+* Library PIL
+  ```sh
+  pip install pillow 
   ```
 
 ### Menjalankan Aplikasi
