@@ -53,14 +53,25 @@ Semua hal berikut harus terinstall sebelum menjalankan program,
 4. Aplikasi anda sudah dapat digunakan
 
 
-## Tampilan
+## Contoh Tampilan
 
 ### Antarmuka
 1. Light Mode
-2. Dark Mode
+   ![image](https://user-images.githubusercontent.com/92136335/221856779-14703947-80da-49a0-82eb-933e0b4c1e67.png)
+
+3. Dark Mode
+   ![image](https://user-images.githubusercontent.com/92136335/221856735-5aece151-cad5-4ef9-8617-43d0e55b0e54.png)
+
 
 ### Tampilan Grafik
 1. Grafik 1D
+   ![image](https://user-images.githubusercontent.com/92136335/221857427-7a184457-eef7-4224-bc09-5ff9ea96435b.png)
 2. Grafik 2D
+   ![image](https://user-images.githubusercontent.com/92136335/221857350-f012aa77-ac44-4e89-a0ed-8ae5defb0d16.png)
 3. Grafik 3D
+   ![image](https://user-images.githubusercontent.com/92136335/221856991-97258f8b-15f0-4c38-91a3-b61dca58a71f.png)
 4. Grafik Tidak Tersedia
+   ![image](https://user-images.githubusercontent.com/92136335/221857199-2fb148ab-7148-4c69-9ffe-3eae555327c5.png)
+
+### Tampilan Terminal
+![image](https://user-images.githubusercontent.com/92136335/221857654-0cf9e0e9-b6ce-434f-a905-7161735ee73f.png)
