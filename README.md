@@ -31,8 +31,9 @@ Semua hal berikut harus terinstall sebelum menjalankan program,
   ```sh
   pip install tk
   ```
-* Library CustomTkinter
+* Library CustomTkinter {PENTING! lakukan uninstall terlebih dahulu apabila sudah melakukan instalasi sebelumnya, terdapat perubahan syntax pada CTkLabel pada versi terbaru dari customtkinter)
   ```sh
+  pip uninstall customtkinter
   pip install customtkinter
   ```
 * Library Matplotlib
