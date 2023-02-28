@@ -7,6 +7,7 @@ from utils.bruteforce import *
 # import GUI
 import tkinter
 import tkinter.messagebox
+from tkinter import font
 import customtkinter
 import time as t
 import numpy as np
@@ -55,7 +56,6 @@ class App(customtkinter.CTk):
         self.frame_right.rowconfigure(1, weight=2)
         self.frame_right.rowconfigure(2, weight=1)
 
-
         self.frame_input = customtkinter.CTkFrame(master=self.frame_right)
         self.frame_input.grid(row=0, column=0, rowspan= 3, pady=20, padx=20, sticky="nsew")
 
@@ -69,12 +69,12 @@ class App(customtkinter.CTk):
         self.frame_input.columnconfigure(1, weight=1)
         self.headFrameInput = customtkinter.CTkLabel(master=self.frame_input,
                                                         text="Customize Your Data",
-                                                        text_font=("Roboto Medium", -20))
+                                                        font=('Roboto', -20, 'Medium'))
         self.headFrameInput.grid(row=0, column=0, columnspan=2, pady=20, padx=10, sticky="")
 
         self.dimension = customtkinter.CTkLabel(master=self.frame_input,
                                               text="Dimension of Point",
-                                              text_font=("Roboto Medium", -16))  
+                                              font=("Roboto Medium", -16))  
         self.dimension.grid(row=1, column=0, pady=0, padx=10)
 
         self.dimensionBuffer = customtkinter.CTkEntry(master=self.frame_input,
@@ -85,7 +85,7 @@ class App(customtkinter.CTk):
 
         self.numPointsLabel = customtkinter.CTkLabel(master=self.frame_input,
                                               text="Number of points",
-                                              text_font=("Roboto Medium", -16))  
+                                              font=("Roboto Medium", -16))  
         self.numPointsLabel.grid(row=2, column=0, pady=0, padx=10)
 
         self.numPointsBuffer = customtkinter.CTkEntry(master=self.frame_input,
@@ -95,7 +95,7 @@ class App(customtkinter.CTk):
 
         self.maxAxis = customtkinter.CTkLabel(master=self.frame_input,
                                               text="Axis Width",
-                                              text_font=("Roboto Medium", -16))  
+                                              font=("Roboto Medium", -16))  
         self.maxAxis.grid(row=3, column=0, pady=0, padx=10)
 
         self.maxAxis = customtkinter.CTkOptionMenu(master=self.frame_input,
@@ -115,13 +115,13 @@ class App(customtkinter.CTk):
 
         self.bufferValidityLabel = customtkinter.CTkLabel(master=self.frame_input,
                                               text="All points will be unique set of integers.",
-                                              text_font=("Roboto Medium", -10))
+                                              font=("Roboto Medium", -10))
         self.bufferValidityLabel.grid(row=5, column=0, columnspan=3, pady=0, padx=10, sticky="we")
 
 
         self.generatedPointLabel = customtkinter.CTkLabel(master=self.frame_input,
                                               text="Generated Points",
-                                              text_font=("Roboto Medium", -16))
+                                              font=("Roboto Medium", -16))
         self.generatedPointLabel.grid(row=6, column=0, columnspan=3, pady=0, padx=10)
 
         self.generatedPointFrame = customtkinter.CTkFrame(self.frame_input,
@@ -140,7 +140,7 @@ class App(customtkinter.CTk):
 
         self.generatedPointTextLabel = customtkinter.CTkLabel(master=self.generatedPointTextFrame,
                                                               text="",
-                                                              text_font=("Roboto Medium", -12), 
+                                                              font=("Roboto Medium", -12), 
                                                               fg_color="white",
                                                               justify="left",
                                                               anchor="w",
@@ -170,21 +170,21 @@ class App(customtkinter.CTk):
 
         self.graphLabel = customtkinter.CTkLabel(master=self.frame_info,
                                               text="Graph Plot",
-                                              text_font=("Roboto Medium", -28))  
+                                              font=("Roboto Medium", -28))  
         self.graphLabel.grid(row=0, column=0, padx=20, pady=20)
 
 
         self.solutionLabel = customtkinter.CTkLabel(master=self.frame_info,
                                                    corner_radius=6,
                                                    text = "",
-                                                   text_font=("Roboto Medium", -28),
+                                                   font=("Roboto Medium", -28),
                                                    fg_color=("white", "gray38"),
                                                    justify=tkinter.LEFT)
         self.solutionLabel.grid(column=0, row=1, sticky="nsew", pady=15)
 
         self.label_infot3 = customtkinter.CTkLabel(master=self.frame_right,
                                               text="Execution time: ",
-                                              text_font=("Roboto Medium", -15),
+                                              font=("Roboto Medium", -15),
                                               justify = "left")  
         self.label_infot3.grid(row=3, column=1, columnspan=2, sticky="nw")
 
@@ -204,7 +204,7 @@ class App(customtkinter.CTk):
             self.solutionLabel.configure(image="")
             self.solutionLabel.configure(text="Not Available For Dimension > 3")
         distanceBrute, solutionBrute, countBrute = bruteForce(self.numOfPoints, self.listPoint)
-        generateTerminal(distanceBrute, countBrute, solutionBrute, self.solution, self.countEuclidean, self.shortestDistance, self.listPoint)
+        generateTerminal(distanceBrute, countBrute, solutionBrute, self.solution, self.countEuclidean, self.shortestDistance,)
 
     def displayPoints(self, textToDisplay):
         self.generatedPointCanvas.destroy()
@@ -222,7 +222,7 @@ class App(customtkinter.CTk):
 
         self.generatedPointTextLabel = customtkinter.CTkLabel(master=self.generatedPointTextFrame,
                                                               text=textToDisplay,
-                                                              text_font=("Roboto Medium", -12), 
+                                                              font=("Roboto Medium", -12), 
                                                               fg_color="white",
                                                               justify="left",
                                                               anchor="w",

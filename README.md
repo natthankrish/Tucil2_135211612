@@ -27,6 +27,10 @@ Semua hal berikut harus terinstall sebelum menjalankan program,
   ```sh
   sudo apt-get install python3
   ```
+* Library Tkinter
+  ```sh
+  pip install tk
+  ```
 * Library CustomTkinter
   ```sh
   pip install customtkinter
